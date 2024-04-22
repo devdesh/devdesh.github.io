@@ -1,0 +1,130 @@
+openapi: 3.0.0
+
+info:
+  version: '1.5'
+  title: Simple HR API
+  description: 'API to get HR services such as getting employee details, and creating a new employee.'
+  termsOfService: https://www.smartbear.com/terms-of-use
+  contact:
+   name: support
+   url: www.google.com
+   email: support@companyname.com
+   
+servers:
+ - url: http://dev.testHRAPI.com
+   description: dev server
+ - url: http://prod.testHRAPI.com
+   description: prod server
+   
+paths:
+ /employees:
+  get:
+   description: Get employees from the HR database
+   parameters: 
+    - name: limit
+      in: query
+      description: Number of employees returned
+      schema:
+       type: integer
+       description: Integer value to limit the number of employees returned from the database
+       minimum: 10
+       maximum: 20
+       example: 12
+       
+    - name: pagelimit
+      in: query
+      description: Number of pages of employees to be returned
+      schema:
+       type: integer
+       description: number of pages returned
+       minimum: 1
+       maximum: 5
+       example: 2
+       
+   responses: 
+    200:
+     description: employees data returned successfully
+     content:
+      application/json:
+       schema:
+        type: array
+        items:
+         allOf:
+          -
+           $ref: '#/components/schemas/Employee'
+           
+      application/xml:
+       schema:
+        $ref: '#/components/schemas/Employees'
+            
+  post:
+   description: Creates a new employee in the HR database
+   requestBody:
+    required: true
+    content:
+      application/json:
+       schema:
+        type: object
+        allOf:
+         - 
+          $ref: '#/components/schemas/Employee'
+        
+   responses:
+     200:
+      description: Employee successfully created
+      
+      
+ /employees/{employeeid}:
+  get:
+   description: Gets an employee by an employee ID
+   parameters: 
+    - 
+     name: employeeid
+     required: true
+     in: path
+     description: ID of the employee to be retrieved
+     schema:
+       type: integer
+       description: ID of the employee to be retrieved
+       minimum: 1
+       maximum: 8988
+       example: 22
+       
+   responses:
+    200:
+     description: Employee returned successfully by using employee ID
+     content:
+      application/json:
+       schema:
+        $ref: '#/components/schemas/Employee'
+          
+      application/xml:
+       schema:
+        $ref: '#/components/schemas/Employee'
+           
+           
+components:
+ schemas:
+  
+  Employee:
+   description: Employee model information
+   properties:
+     
+    id:
+     type: integer
+     example: 3
+    
+    employee_name:
+     type: string
+     example: Test Employee
+           
+    employee_title:
+     type: string
+     example: Software Developer
+           
+   
+  Employees:
+   description: List of employee object
+   type: array
+   items:
+    $ref: '#/components/schemas/Employee'
